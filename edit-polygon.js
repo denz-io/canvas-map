@@ -1,3 +1,20 @@
+let selectedObject;
+
+canvas.on('mouse:dblclick', function (event) {
+   if (!isNaN(event.target?.index)) {
+     console.log(
+       event.target.points
+     )
+   }
+});
+canvas.on('mouse:down', function (event) {
+   if (!isNaN(event.target?.index)) {
+      selectedObject = event.target?.index
+   } else {
+      selectedObject = undefined;
+   }
+});
+
 function polygonPositionHandler(dim, finalMatrix, fabricObject) {
     let x = (fabricObject.points[this.pointIndex].x - fabricObject.pathOffset.x),
     y = (fabricObject.points[this.pointIndex].y - fabricObject.pathOffset.y);
@@ -47,28 +64,40 @@ function ClearCanvas() {
   })
 }
 
+function Delete() {
+  if (!isNaN(selectedObject)) {
+      canvas.getObjects().forEach((obj) => {
+         if (selectedObject === obj.index) {
+            canvas.remove(obj) 
+         }
+      })
+  }
+}
+
 function Edit() {
-    let poly = canvas.getObjects()[0];
-    canvas.setActiveObject(poly);
-    poly.edit = !poly.edit;
-    if (poly.edit) {
-        let lastControl = poly.points.length - 1;
-        poly.cornerStyle = 'circle';
-        poly.cornerColor = 'rgba(0,0,255,0.5)';
-        poly.controls = poly.points.reduce(function(acc, point, index) {
-            acc['p' + index] = new fabric.Control({
-                positionHandler: polygonPositionHandler,
-                actionHandler: anchorWrapper(index > 0 ? index - 1 : lastControl, actionHandler),
-                actionName: 'modifyPolygon',
-                pointIndex: index
-            });
-            return acc;
-        }, { });
-    } else {
-        poly.cornerColor = 'blue';
-        poly.cornerStyle = 'rect';
-        poly.controls = fabric.Object.prototype.controls;
+    if (!isNaN(selectedObject) && canvas.getObjects().length > 0) {
+      let poly = canvas.getObjects()[selectedObject];
+      canvas.setActiveObject(poly);
+      poly.edit = !poly.edit;
+      if (poly.edit) {
+          let lastControl = poly.points.length - 1;
+          poly.cornerStyle = 'circle';
+          poly.cornerColor = 'rgba(0,0,255,0.5)';
+          poly.controls = poly.points.reduce(function(acc, point, index) {
+              acc['p' + index] = new fabric.Control({
+                  positionHandler: polygonPositionHandler,
+                  actionHandler: anchorWrapper(index > 0 ? index - 1 : lastControl, actionHandler),
+                  actionName: 'modifyPolygon',
+                  pointIndex: index
+              });
+              return acc;
+          }, { });
+      } else {
+          poly.cornerColor = 'blue';
+          poly.cornerStyle = 'rect';
+          poly.controls = fabric.Object.prototype.controls;
+      }
+      poly.hasBorders = !poly.edit;
+      canvas.requestRenderAll();
     }
-    poly.hasBorders = !poly.edit;
-    canvas.requestRenderAll();
 }

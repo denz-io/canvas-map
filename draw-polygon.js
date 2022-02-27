@@ -1,6 +1,6 @@
 let min = 99;
 let max = 999999;
-let polygonMode = true;
+let polygonMode = false;
 let pointArray = new Array();
 let lineArray = new Array();
 let activeLine;
@@ -152,6 +152,7 @@ prototypefabric.polygon = {
             opacity: 1,
             hasBorders: false,
             objectCaching: false,
+            index: canvas.getObjects().length
         });
         canvas.add(polygon);
         activeLine = null;

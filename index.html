@@ -6,34 +6,32 @@
                 overflow: hidden;
                 width: 100vw;
                 height: 100vh;
-            }
-            .controls {
                 position: relative;
             }
-            .edit-button, .create-button, .clear-button, .add-bg-button   {
+            .controls {
                 position: absolute;
                 z-index: 999999;
                 top: 10px;
                 left: 10px;
             }
-            .create-button {
-                top: 40px;
-            }
-            .clear-button {
-                top: 70px;
-            }
-            .add-bg-button {
-                top: 100px;
+            .edit-button, .create-button, .clear-button, .add-bg-button   {
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #0052CC;
+                color: white; 
+                border: 1px solid white;
+                cursor: pointer;
             }
         </style>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.0.0/fabric.min.js"></script>
     </head>
     <body>
 	<div class="controls">
+	    <button class="create-button" id="create-polygon">Create Polygon</button>
+	    <button class="edit-button" onclick="Edit()">Toggle Transform</button>
+	    <button class="clear-button" onclick="Delete()">Delete</button>
 	    <button class="add-bg-button" onclick="AddImage()">Add Background</button>
 	    <button class="clear-button" onclick="ClearCanvas()">Clear</button>
-	    <button class="edit-button" onclick="Edit()">Edit polygon</button>
-	    <button class="create-button" id="create-polygon">Create Polygon</button>
 	</div>
 	<canvas id="canvas"/>
         <script type="text/javascript" src="./init-canvas.js"></script>
