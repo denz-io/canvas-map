@@ -1,8 +1,10 @@
 # canvas-map
 
-A custom fabric app to help create interactive mapping on images
+An app to help create interactive mapping on images.
 
-This is a tool created using Fabric JS 
+Easily create shapes that you can draw on to your canvas.
+
+This is a tool created using Fabric JS 4.0 
 
 Demo: https://denz-io.github.io/canvas-map/
 
