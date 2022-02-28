@@ -4,6 +4,9 @@ var canvas = new fabric.Canvas('canvas', {
   backgroundColor: 'gray'
 });
 
+var bgScaledWidth = 0;
+var bgScaledHeight = 0;
+
 function AddImage() {
     let ImageUrl = prompt("Add a Image URL", "https://archinect.imgix.net/uploads/gx/gxaluhao99e4xpmv.jpg?auto=compress%2Cformat")
     if (canvas) {
@@ -20,6 +23,8 @@ function AddImage() {
             })
           }
           canvas.setBackgroundImage(oImg, canvas.renderAll.bind(canvas))
+          bgScaledWidth = oImg.getScaledWidth()
+          bgScaledHeight = oImg.getScaledHeight()
           canvas.renderAll()
       })
     }

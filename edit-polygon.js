@@ -3,7 +3,17 @@ let selectedObject;
 canvas.on('mouse:dblclick', function (event) {
    if (!isNaN(event.target?.index)) {
      console.log(
-       event.target.points
+       {
+         points: event.target.points,
+         coordinates: {
+           x: 100 * (event.target.left / bgScaledWidth),
+           y: 100 * (event.target.top / bgScaledHeight),
+         },
+         size: {
+           width: 100 * (event.target.width / bgScaledWidth),
+           height: 100 * (event.target.height / bgScaledHeight),
+         }
+       }
      )
    }
 });
