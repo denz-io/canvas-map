@@ -11,35 +11,45 @@ window.onload = function(e){
    document.getElementById("create-polygon")
       .addEventListener("click", function() {
          prototypefabric.polygon.drawPolygon(); 
+         document.getElementById("cancel-polygon").style.display = "inline" 
+         document.getElementById("create-polygon").style.display = "none"
+      });
+   document.getElementById("create-circle")
+      .addEventListener("click", function() {
+         prototypefabric.circle.drawCircle(); 
       });
 };
 
 let prototypefabric = new function () {
     this.initPolyDraw = function () {
         canvas.on('mouse:down', function (options) {
-            if(options.target && options.target.id == pointArray[0].id){
-                prototypefabric.polygon.generatePolygon(pointArray);
-            }
-            if(polygonMode){
-                prototypefabric.polygon.addPoint(options);
+            if (options.target?.type === 'polyPoint' || options.target?.type === 'polygon' || options.target?.type === undefined) {
+              if(options.target && options.target.id == pointArray[0].id){
+                  prototypefabric.polygon.generatePolygon(pointArray);
+              }
+              if(polygonMode){
+                  prototypefabric.polygon.addPoint(options);
+              }
             }
         });
         canvas.on('mouse:move', function (options) {
-            if(activeLine && activeLine.class == "line"){
-                let pointer = canvas.getPointer(options.e);
-                activeLine.set({ x2: pointer.x, y2: pointer.y });
-
-                let points = activeShape.get("points");
-                points[pointArray.length] = {
-                    x:pointer.x,
-                    y:pointer.y
-                }
-                activeShape.set({
-                    points: points
-                });
-                canvas.renderAll();
+            if (options.target?.type === 'polyPoint') {
+              if(activeLine && activeLine.class == "line"){
+                  let pointer = canvas.getPointer(options.e);
+                  activeLine.set({ x2: pointer.x, y2: pointer.y });
+             
+                  let points = activeShape.get("points");
+                  points[pointArray.length] = {
+                      x:pointer.x,
+                      y:pointer.y
+                  }
+                  activeShape.set({
+                      points: points
+                  });
+                  canvas.renderAll();
+              }
+              canvas.renderAll();
             }
-            canvas.renderAll();
         });
     };
 };
@@ -66,6 +76,7 @@ prototypefabric.polygon = {
             hasControls: false,
             originX:'center',
             originY:'center',
+            type: 'polyPoint',
             id:id
         });
         if(pointArray.length == 0){
@@ -101,7 +112,8 @@ prototypefabric.polygon = {
                 selectable: false,
                 hasBorders: false,
                 hasControls: false,
-                evented: false
+                evented: false,
+                type: 'activeShape'
             });
             canvas.remove(activeShape);
             canvas.add(polygon);
@@ -146,9 +158,9 @@ prototypefabric.polygon = {
         })
         canvas.remove(activeShape).remove(activeLine);
         let polygon = new fabric.Polygon(points,{
-            stroke:'#333333',
-            strokeWidth: 0.5,
-            fill: 'rgba(255, 255, 255, 0.5)',
+            stroke:'none',
+            strokeWidth: 0,
+            fill: 'rgba(96, 156, 182, 0.7)',
             opacity: 1,
             hasBorders: false,
             objectCaching: false,
@@ -159,5 +171,62 @@ prototypefabric.polygon = {
         activeShape = null;
         polygonMode = false;
         canvas.selection = true;
+        document.getElementById("cancel-polygon").style.display = "none" 
+        document.getElementById("create-polygon").style.display = "inline"
     }
+};
+
+prototypefabric.circle = {
+  circleMode: false,
+  drawCircle: function () {
+    prototypefabric.circle.enableDraw()
+    this.bindEvents();
+  },
+  bindEvents: function() {
+    canvas.on('mouse:down', function(o) {
+      if(prototypefabric.circle.isEnable()) {
+        prototypefabric.circle.onMouseDown(o);
+      }
+    });
+  },
+  onMouseDown: function(o) {
+    if (!prototypefabric.circle.isEnable()) {
+      return;
+    }
+    var pointer = canvas.getPointer(o.e);
+    origX = pointer.x;
+    origY = pointer.y;
+
+    var circle = new fabric.Circle({
+      top: origY,
+      left: origX,
+      transparentCorners: false,
+      hasBorders: false,
+      fill: 'rgba(242,241,236, 0.7)',
+      radius: 18,
+      strokeWidth: 4,
+      stroke: '#fff',      
+      scaleX: 1,           
+      scaleY: 1,           
+      objectCaching: false,
+      transparentCorners: false,      
+      hasBorders: false,   
+      hasControls: false,  
+      originX: 'center',   
+      originY: 'center',
+      index: canvas.getObjects().length
+    });
+    canvas.add(circle).setActiveObject(circle);
+    canvas.renderAll();
+    prototypefabric.circle.disableDraw() 
+  },
+  isEnable: function() {
+    return prototypefabric.circle.circleMode;
+  },
+  enableDraw: function() {
+    prototypefabric.circle.circleMode = true;
+  },
+  disableDraw: function() {
+    prototypefabric.circle.circleMode = false;
+  }
 };

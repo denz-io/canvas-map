@@ -12,7 +12,10 @@
                 position: absolute;
                 z-index: 999999;
                 top: 10px;
-                left: 10px;
+                left: 0px;
+                display: flex;
+                width: 99%;
+                padding: 0px 10px;
             }
             .edit-button, .create-button, .clear-button, .add-bg-button   {
                 padding: 10px;
@@ -27,15 +30,24 @@
     </head>
     <body>
 	<div class="controls">
-	    <button class="create-button" id="create-polygon">Create Polygon</button>
-	    <button class="edit-button" onclick="Edit()">Toggle Transform</button>
-	    <button class="clear-button" onclick="Delete()">Delete</button>
-	    <button class="add-bg-button" onclick="AddImage()">Add Background</button>
-	    <button class="clear-button" onclick="ClearCanvas()">Clear</button>
+            <div style="margin-right: auto;">
+                <button class="create-button" id="create-polygon">Create Polygon</button>
+                <button class="create-button" id="cancel-polygon" onclick="cancelPolyDraw()" style='display: none;'>Cancel Polygon</button>
+                <button class="create-button" id="create-circle">Create Circle</button>
+                <button class="clear-button" onclick="createGroup()">Create Group</button>
+                <button class="clear-button" onclick="unGroup()">Un Group</button>
+                <button class="add-bg-button" onclick="AddImage()">Add Background</button>
+                <button class="clear-button" onclick="ClearCanvas()">Clear</button>
+            </div>
+            <div id="object-controller" style='visibility: hidden;'>
+                <button class="edit-button" onclick="Edit()">Toggle Transform</button>
+                <button class="edit-button" onclick="EditColor()">Change Color</button>
+                <button class="clear-button" onclick="Delete()">Delete</button>
+            </div>
 	</div>
 	<canvas id="canvas"/>
         <script type="text/javascript" src="./init-canvas.js"></script>
         <script type="text/javascript" src="./edit-polygon.js"></script>
-        <script type="text/javascript" src="./draw-polygon.js"></script>
+        <script type="text/javascript" src="./draw-object.js"></script>
     </body>
 </html>

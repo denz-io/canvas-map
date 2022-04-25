@@ -1,26 +1,57 @@
 let selectedObject;
 
 canvas.on('mouse:dblclick', function (event) {
-   if (!isNaN(event.target?.index)) {
-     console.log(
-       {
-         points: event.target.points,
-         coordinates: {
-           x: 100 * (event.target.left / bgScaledWidth),
-           y: 100 * (event.target.top / bgScaledHeight),
-         },
-         size: {
-           width: 100 * (event.target.width / bgScaledWidth),
-           height: 100 * (event.target.height / bgScaledHeight),
-         }
-       }
-     )
-   }
+    if (bgScaledWidth && bgScaledHeight) {
+        let coordinates = {}
+        let markerCoordinates = {}
+        let points = {}
+        let size = {}
+        if (event.target.type === 'group') {
+          coordinates = {
+            x: 100 * (event.target.left / bgScaledWidth),
+            y: 100 * (event.target.top / bgScaledHeight),
+          }
+          event.target?.forEachObject(obj => {
+              if (obj.type === 'polygon') {
+                size = {
+                  width: 100 * (obj.width / bgScaledWidth),
+                  height: 100 * (obj.height / bgScaledHeight),
+                }
+                points =  obj.points;
+              }
+              if (obj.type === 'circle') {
+                 markerCoordinates = {
+                   x: 100 * (obj.left / bgScaledWidth),
+                   y: 100 * (obj.top / bgScaledHeight),
+                 }
+              }
+          })
+          console.log({ coordinates, points, markerCoordinates, size })
+        } else {
+          console.log(
+            {
+              points: event.target.points,
+              coordinates: {
+                x: 100 * (event.target.left / bgScaledWidth),
+                y: 100 * (event.target.top / bgScaledHeight),
+              },
+              size: {
+                width: 100 * (event.target.width / bgScaledWidth),
+                height: 100 * (event.target.height / bgScaledHeight),
+              }
+            }
+          )
+        }
+    } else {
+        alert('This function requires you to load a background.')
+    }
 });
 canvas.on('mouse:down', function (event) {
    if (!isNaN(event.target?.index)) {
+      document.getElementById('object-controller').style.visibility = 'visible'
       selectedObject = event.target?.index
    } else {
+      document.getElementById('object-controller').style.visibility = 'hidden' 
       selectedObject = undefined;
    }
 });
@@ -79,6 +110,7 @@ function Delete() {
       canvas.getObjects().forEach((obj) => {
          if (selectedObject === obj.index) {
             canvas.remove(obj) 
+            document.getElementById('object-controller').style.visibility = 'hidden'
          }
       })
   }
@@ -88,26 +120,77 @@ function Edit() {
     if (!isNaN(selectedObject) && canvas.getObjects().length > 0) {
       let poly = canvas.getObjects()[selectedObject];
       canvas.setActiveObject(poly);
-      poly.edit = !poly.edit;
-      if (poly.edit) {
-          let lastControl = poly.points.length - 1;
-          poly.cornerStyle = 'circle';
-          poly.cornerColor = 'rgba(0,0,255,0.5)';
-          poly.controls = poly.points.reduce(function(acc, point, index) {
-              acc['p' + index] = new fabric.Control({
-                  positionHandler: polygonPositionHandler,
-                  actionHandler: anchorWrapper(index > 0 ? index - 1 : lastControl, actionHandler),
-                  actionName: 'modifyPolygon',
-                  pointIndex: index
-              });
-              return acc;
-          }, { });
+      if (poly.type === 'polygon') {
+        poly.edit = !poly.edit;
+        if (poly.edit) {
+            let lastControl = poly.points.length - 1;
+            poly.cornerStyle = 'circle';
+            poly.cornerColor = 'rgba(0,0,255,0.5)';
+            poly.controls = poly.points.reduce(function(acc, point, index) {
+                acc['p' + index] = new fabric.Control({
+                    positionHandler: polygonPositionHandler,
+                    actionHandler: anchorWrapper(index > 0 ? index - 1 : lastControl, actionHandler),
+                    actionName: 'modifyPolygon',
+                    pointIndex: index
+                });
+                return acc;
+            }, { });
+        } else {
+            poly.cornerColor = 'blue';
+            poly.cornerStyle = 'rect';
+            poly.controls = fabric.Object.prototype.controls;
+        }
+        poly.hasBorders = !poly.edit;
+        canvas.requestRenderAll();
       } else {
-          poly.cornerColor = 'blue';
-          poly.cornerStyle = 'rect';
-          poly.controls = fabric.Object.prototype.controls;
+        alert('You can only transform poly Objects')
       }
-      poly.hasBorders = !poly.edit;
-      canvas.requestRenderAll();
     }
+}
+
+function EditColor() {
+    if (!isNaN(selectedObject) && canvas.getObjects().length > 0) {
+      let color = prompt('Please enter a valid color value (hex, rgb, color)')
+      if (color) {
+          let activeOject = canvas.getObjects()[selectedObject];
+          canvas.setActiveObject(activeOject);
+          activeOject.set({ fill: color })
+          canvas.renderAll();
+      }
+    }
+}
+
+function cancelPolyDraw() {
+    polygonMode = false;
+    canvas.getObjects().forEach((obj) => {
+       if (obj.type === 'polyPoint' || obj.type === 'line' || obj.type === 'activeShape') {
+          canvas.remove(obj) 
+       }
+    })
+    document.getElementById("cancel-polygon").style.display = "none" 
+    document.getElementById("create-polygon").style.display = "inline"
+}
+
+function createGroup() {
+    if (!canvas.getActiveObject()) {
+        return;
+    }
+    if (canvas.getActiveObject().type !== 'activeSelection') {
+        return;
+    }
+    canvas.getActiveObject().toGroup();
+    canvas.requestRenderAll();
+    alert('Selected objects have been grouped')
+}
+
+function unGroup() {
+    if (!canvas.getActiveObject()) {
+        return;
+    }
+    if (canvas.getActiveObject().type !== 'group') {
+        return;
+    }
+    canvas.getActiveObject().toActiveSelection();
+    canvas.requestRenderAll();
+    alert('Selected objects have been un grouped')
 }
