@@ -203,7 +203,7 @@ prototypefabric.circle = {
       transparentCorners: false,
       hasBorders: false,
       fill: 'rgba(242,241,236, 0.7)',
-      radius: 18,
+      radius: 12,
       strokeWidth: 4,
       stroke: '#fff',      
       scaleX: 1,           
