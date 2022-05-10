@@ -2,6 +2,7 @@ let selectedObject;
 
 canvas.on('mouse:dblclick', function (event) {
     if (bgScaledWidth && bgScaledHeight) {
+      if (event.target) {
         let coordinates = {}
         let markerCoordinates = {}
         let points = {}
@@ -42,16 +43,22 @@ canvas.on('mouse:dblclick', function (event) {
             }
           )
         }
+      }  
     } else {
         alert('This function requires you to load a background.')
     }
 });
 canvas.on('mouse:down', function (event) {
    if (!isNaN(event.target?.index)) {
-      document.getElementById('object-controller').style.visibility = 'visible'
+      if (event.target?.type === 'polygon') {
+         document.getElementById('object-controller').style.display = 'block'
+      } else {
+         document.getElementById('general-controller').style.display = 'block'
+      }
       selectedObject = event.target?.index
    } else {
-      document.getElementById('object-controller').style.visibility = 'hidden' 
+      document.getElementById('object-controller').style.display = 'none' 
+      document.getElementById('general-controller').style.display = 'none'
       selectedObject = undefined;
    }
 });
@@ -100,9 +107,11 @@ function anchorWrapper(anchorIndex, fn) {
 }
 
 function ClearCanvas() {
+  cancelPolyDraw()
   canvas.getObjects().forEach((obj) => {
      canvas.remove(obj) 
   })
+  canvas.requestRenderAll();
 }
 
 function Delete() {
@@ -110,10 +119,32 @@ function Delete() {
       canvas.getObjects().forEach((obj) => {
          if (selectedObject === obj.index) {
             canvas.remove(obj) 
-            document.getElementById('object-controller').style.visibility = 'hidden'
+            document.getElementById('object-controller').style.display = 'none'
+            document.getElementById('general-controller').style.display = 'none'
          }
       })
   }
+}
+
+function ToggleGroupEvents(toggle) {
+  if (canvas.getObjects().length > 0) {
+    canvas.getObjects().forEach((obj) => {
+      if (obj.type === 'group') {
+        obj.set({
+          selectable: toggle,
+          hasControls: toggle,
+          evented: toggle
+        })
+      }
+    })
+    canvas.requestRenderAll();
+    if (toggle) {
+      alert('Group events have been Enabled')
+    } else {
+      alert('Group events have been Disabled')
+    }
+  }
+  
 }
 
 function Edit() {
@@ -162,6 +193,10 @@ function EditColor() {
 
 function cancelPolyDraw() {
     polygonMode = false;
+    pointArray = [];
+    lineArray = [];
+    activeLine = null;
+    activeShape = null;
     canvas.getObjects().forEach((obj) => {
        if (obj.type === 'polyPoint' || obj.type === 'line' || obj.type === 'activeShape') {
           canvas.remove(obj) 
@@ -178,7 +213,10 @@ function createGroup() {
     if (canvas.getActiveObject().type !== 'activeSelection') {
         return;
     }
-    canvas.getActiveObject().toGroup();
+    const newGroup = canvas.getActiveObject().toGroup();
+    newGroup.set({
+      index: canvas.getObjects().length - 1
+    })
     canvas.requestRenderAll();
     alert('Selected objects have been grouped')
 }

@@ -1,10 +1,10 @@
 let min = 99;
 let max = 999999;
 let polygonMode = false;
-let pointArray = new Array();
-let lineArray = new Array();
+let pointArray = [];
+let lineArray = [];
 let activeLine;
-let activeShape = false;
+let activeShape;
 
 window.onload = function(e){ 
    prototypefabric.initPolyDraw();
@@ -57,8 +57,8 @@ let prototypefabric = new function () {
 prototypefabric.polygon = {
     drawPolygon : function() {
         polygonMode = true;
-        pointArray = new Array();
-        lineArray = new Array();
+        pointArray = [];
+        lineArray = [];
         activeLine;
     },
     addPoint : function(options) {

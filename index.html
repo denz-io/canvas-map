@@ -36,12 +36,17 @@
                 <button class="create-button" id="create-circle">Create Circle</button>
                 <button class="clear-button" onclick="createGroup()">Create Group</button>
                 <button class="clear-button" onclick="unGroup()">Un Group</button>
+                <button class="edit-button" onclick="ToggleGroupEvents(false)">Disable Group Events</button>
+                <button class="edit-button" onclick="ToggleGroupEvents(true)">Enable Group Events</button>
                 <button class="add-bg-button" onclick="AddImage()">Add Background</button>
                 <button class="clear-button" onclick="ClearCanvas()">Clear</button>
             </div>
-            <div id="object-controller" style='visibility: hidden;'>
+            <div id="object-controller" style='display: none;'>
                 <button class="edit-button" onclick="Edit()">Toggle Transform</button>
                 <button class="edit-button" onclick="EditColor()">Change Color</button>
+                <button class="clear-button" onclick="Delete()">Delete</button>
+            </div>
+            <div id="general-controller" style='display: none;'>
                 <button class="clear-button" onclick="Delete()">Delete</button>
             </div>
 	</div>
