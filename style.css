@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+.controls {
+    position: absolute;
+    z-index: 999999;
+    top: 10px;
+    left: 0px;
+    display: flex;
+    width: 99%;
+    padding: 0px 10px;
+}
+.edit-button, .create-button, .clear-button, .add-bg-button   {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #0052CC;
+    color: white; 
+    border: 1px solid white;
+    cursor: pointer;
+}
+.list-item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.list-item:hover {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #0052CC;
+}
+
+ul.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    background: #ffffff;
+}
+ul.dropdown li {
+    list-style-type: none;
+}
+
+.drag-controller {
+    padding-top: 3px;
+    cursor: pointer;
+    display: none;
+}
