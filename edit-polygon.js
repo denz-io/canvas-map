@@ -55,10 +55,12 @@ canvas.on('mouse:down', function (event) {
       } else {
          document.getElementById('general-controller').style.display = 'block'
       }
+      document.getElementById('drag-controller').style.display = 'block'
       selectedObject = event.target?.index
    } else {
       document.getElementById('object-controller').style.display = 'none' 
       document.getElementById('general-controller').style.display = 'none'
+      document.getElementById('drag-controller').style.display = 'none'
       selectedObject = undefined;
    }
 });
@@ -121,6 +123,7 @@ function Delete() {
             canvas.remove(obj) 
             document.getElementById('object-controller').style.display = 'none'
             document.getElementById('general-controller').style.display = 'none'
+            document.getElementById('drag-controller').style.display = 'none'
          }
       })
   }
