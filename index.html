@@ -19,6 +19,7 @@
                 <li><button class="list-item" id="create-polygon">Create Polygon</button></li>
                 <li><button class="list-item" id="cancel-polygon" onclick="cancelPolyDraw()" style='display: none;'>Cancel Polygon</button></li>
                 <li><button class="list-item" id="create-circle">Create Circle</button></li>
+                <li><button class="list-item" id="create-rect">Create Rectangle</button></li>
                 <li><button class="list-item" onclick="createGroup()">Create Group</button></li>
                 <li><button class="list-item" onclick="unGroup()">Un Group</button></li>
                 <li><button class="list-item" onclick="ToggleGroupEvents(false)">Disable Group Events</button></li>
@@ -35,10 +36,10 @@
             </span>
             <div id="object-controller" style='display: none;'>
                 <button class="edit-button" onclick="Edit()">Toggle Transform</button>
-                <button class="edit-button" onclick="EditColor()">Change Color</button>
                 <button class="clear-button" onclick="Delete()">Delete</button>
             </div>
             <div id="general-controller" style='display: none;'>
+                <button class="edit-button" onclick="EditColor()">Change Color</button>
                 <button class="clear-button" onclick="Delete()">Delete</button>
             </div>
         </div>

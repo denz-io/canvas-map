@@ -18,6 +18,10 @@ window.onload = function(e){
       .addEventListener("click", function() {
          prototypefabric.circle.drawCircle(); 
       });
+   document.getElementById("create-rect")
+      .addEventListener("click", function() {
+         prototypefabric.rect.drawRect(); 
+      });
 };
 
 let prototypefabric = new function () {
@@ -211,7 +215,6 @@ prototypefabric.circle = {
       objectCaching: false,
       transparentCorners: false,      
       hasBorders: false,   
-      hasControls: false,  
       originX: 'center',   
       originY: 'center',
       index: canvas.getObjects().length
@@ -228,5 +231,52 @@ prototypefabric.circle = {
   },
   disableDraw: function() {
     prototypefabric.circle.circleMode = false;
+  }
+};
+
+prototypefabric.rect = {
+  rectMode: false,
+  drawRect: function () {
+    prototypefabric.rect.enableDraw()
+    this.bindEvents();
+  },
+  bindEvents: function() {
+    canvas.on('mouse:down', function(o) {
+      if(prototypefabric.rect.isEnable()) {
+        prototypefabric.rect.onMouseDown(o);
+      }
+    });
+  },
+  onMouseDown: function(o) {
+    if (!prototypefabric.rect.isEnable()) {
+      return;
+    }
+    var pointer = canvas.getPointer(o.e);
+    origX = pointer.x;
+    origY = pointer.y;
+
+    let rect = new fabric.Rect({
+      top: origY,
+      left: origX,
+      fill: 'lightgreen',
+      width: 200,
+      height: 100,
+      objectCaching: false,
+      stroke: 'none',
+      strokeWidth: 0,
+      index: canvas.getObjects().length
+    });
+    canvas.add(rect).setActiveObject(rect);
+    canvas.renderAll();
+    prototypefabric.rect.disableDraw() 
+  },
+  isEnable: function() {
+    return prototypefabric.rect.rectMode;
+  },
+  enableDraw: function() {
+    prototypefabric.rect.rectMode = true;
+  },
+  disableDraw: function() {
+    prototypefabric.rect.rectMode = false;
   }
 };
