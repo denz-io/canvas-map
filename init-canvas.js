@@ -8,7 +8,9 @@ var bgScaledWidth = 0;
 var bgScaledHeight = 0;
 
 function AddImage() {
-    let ImageUrl = prompt("Add a Image URL", "https://archinect.imgix.net/uploads/gx/gxaluhao99e4xpmv.jpg?auto=compress%2Cformat")
+    let ImageUrl = localStorage.getItem('ImageUrl') || prompt("Add a Image URL", "https://archinect.imgix.net/uploads/gx/gxaluhao99e4xpmv.jpg?auto=compress%2Cformat")
+
+    localStorage.setItem('ImageUrl', ImageUrl)
     if (canvas && ImageUrl) {
       fabric.Image.fromURL(ImageUrl, (oImg) => {
           const widthRatio = canvas.width / oImg.width

@@ -258,9 +258,9 @@ prototypefabric.rect = {
     let rect = new fabric.Rect({
       top: origY,
       left: origX,
-      fill: 'lightgreen',
+      fill: '#cccccc',
       width: 200,
-      height: 100,
+      height: 5,
       objectCaching: false,
       stroke: 'none',
       strokeWidth: 0,

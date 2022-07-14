@@ -9,14 +9,17 @@ canvas.on('mouse:dblclick', function (event) {
     if (bgScaledWidth && bgScaledHeight) {
       if (event.target) {
         let coordinates = {}
+        let polySize = {}
         let markerCoordinates = {}
-        let markerSize = {}
+        let markerSize = 0 
         let rectCoordinates = {}
         let rectSize = {}
         let points = {}
         let size = {}
+        let polyCoordinates = {}
         let rectAngle = 0 
         if (event.target.type === 'group') {
+          size = getSize(event.target,bgScaledWidth,bgScaledHeight)
           coordinates = {
             x: 100 * (event.target.left / bgScaledWidth),
             y: 100 * (event.target.top / bgScaledHeight),
@@ -31,11 +34,15 @@ canvas.on('mouse:dblclick', function (event) {
                 }
               }
               if (obj.type === 'polygon') {
-                size = getSize(obj,bgScaledWidth,bgScaledHeight)
+                polySize = getSize(obj,bgScaledWidth,bgScaledHeight)
                 points =  obj.points;
+                polyCoordinates = {
+                  x: 100 * (obj.left / bgScaledWidth),
+                  y: 100 * (obj.top / bgScaledHeight),
+                }
               }
               if (obj.type === 'circle') {
-                 markerSize = getSize(obj,bgScaledWidth,bgScaledHeight)
+                 markerSize = obj.getRadiusY() 
                  markerCoordinates = {
                    x: 100 * (obj.left / bgScaledWidth),
                    y: 100 * (obj.top / bgScaledHeight),
@@ -43,6 +50,8 @@ canvas.on('mouse:dblclick', function (event) {
               }
           })
           console.log({ 
+            polySize,
+            polyCoordinates,
             coordinates, 
             points, 
             markerCoordinates, 
@@ -51,6 +60,7 @@ canvas.on('mouse:dblclick', function (event) {
             rectSize,
             rectCoordinates,
             rectAngle, 
+            angle: event.target.angle 
           })
         } else {
           console.log(
@@ -132,6 +142,7 @@ function anchorWrapper(anchorIndex, fn) {
 
 function ClearCanvas() {
   cancelPolyDraw()
+  localStorage.removeItem('ImageUrl')
   canvas.getObjects().forEach((obj) => {
      canvas.remove(obj) 
   })
