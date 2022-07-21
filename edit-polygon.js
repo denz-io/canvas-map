@@ -11,7 +11,7 @@ canvas.on('mouse:dblclick', function (event) {
         let coordinates = {}
         let polySize = {}
         let markerCoordinates = {}
-        let markerSize = 0 
+        let markerSize = {} 
         let rectCoordinates = {}
         let rectSize = {}
         let points = {}
@@ -42,7 +42,7 @@ canvas.on('mouse:dblclick', function (event) {
                 }
               }
               if (obj.type === 'circle') {
-                 markerSize = obj.getRadiusY() 
+                 markerSize = getSize(obj,bgScaledWidth,bgScaledHeight) 
                  markerCoordinates = {
                    x: 100 * (obj.left / bgScaledWidth),
                    y: 100 * (obj.top / bgScaledHeight),
