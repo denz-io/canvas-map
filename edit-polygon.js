@@ -1,33 +1,67 @@
 let selectedObject;
 
+const getSize = (obj, bgScaledWidth, bgScaledHeight) => ({
+  width: 100 * ((obj.width * obj.scaleX) / bgScaledWidth),
+  height: 100 * ((obj.height * obj.scaleY) / bgScaledHeight),
+})
+
 canvas.on('mouse:dblclick', function (event) {
     if (bgScaledWidth && bgScaledHeight) {
       if (event.target) {
         let coordinates = {}
+        let polySize = {}
         let markerCoordinates = {}
+        let markerSize = {} 
+        let rectCoordinates = {}
+        let rectSize = {}
         let points = {}
         let size = {}
+        let polyCoordinates = {}
+        let rectAngle = 0 
         if (event.target.type === 'group') {
+          size = getSize(event.target,bgScaledWidth,bgScaledHeight)
           coordinates = {
             x: 100 * (event.target.left / bgScaledWidth),
             y: 100 * (event.target.top / bgScaledHeight),
           }
           event.target?.forEachObject(obj => {
-              if (obj.type === 'polygon') {
-                size = {
-                  width: 100 * (obj.width / bgScaledWidth),
-                  height: 100 * (obj.height / bgScaledHeight),
+              if (obj.type === 'rect') {
+                rectSize = getSize(obj,bgScaledWidth,bgScaledHeight)
+                rectAngle = obj.angle
+                rectCoordinates = {
+                  x: 100 * (obj.left / bgScaledWidth),
+                  y: 100 * (obj.top / bgScaledHeight),
                 }
+              }
+              if (obj.type === 'polygon') {
+                polySize = getSize(obj,bgScaledWidth,bgScaledHeight)
                 points =  obj.points;
+                polyCoordinates = {
+                  x: 100 * (obj.left / bgScaledWidth),
+                  y: 100 * (obj.top / bgScaledHeight),
+                }
               }
               if (obj.type === 'circle') {
+                 markerSize = getSize(obj,bgScaledWidth,bgScaledHeight) 
                  markerCoordinates = {
                    x: 100 * (obj.left / bgScaledWidth),
                    y: 100 * (obj.top / bgScaledHeight),
                  }
               }
           })
-          console.log({ coordinates, points, markerCoordinates, size })
+          console.log({ 
+            polySize,
+            polyCoordinates,
+            coordinates, 
+            points, 
+            markerCoordinates, 
+            size, 
+            markerSize,
+            rectSize,
+            rectCoordinates,
+            rectAngle, 
+            angle: event.target.angle 
+          })
         } else {
           console.log(
             {
@@ -36,10 +70,8 @@ canvas.on('mouse:dblclick', function (event) {
                 x: 100 * (event.target.left / bgScaledWidth),
                 y: 100 * (event.target.top / bgScaledHeight),
               },
-              size: {
-                width: 100 * (event.target.width / bgScaledWidth),
-                height: 100 * (event.target.height / bgScaledHeight),
-              }
+              size: getSize(event.target, bgScaledWidth,bgScaledHeight),
+              angle: event.target.angle
             }
           )
         }
@@ -110,6 +142,7 @@ function anchorWrapper(anchorIndex, fn) {
 
 function ClearCanvas() {
   cancelPolyDraw()
+  localStorage.removeItem('ImageUrl')
   canvas.getObjects().forEach((obj) => {
      canvas.remove(obj) 
   })
@@ -188,7 +221,7 @@ function EditColor() {
       if (color) {
           let activeOject = canvas.getObjects()[selectedObject];
           canvas.setActiveObject(activeOject);
-          activeOject.set({ fill: color })
+          activeOject.set({ fill: color, stroke: color })
           canvas.renderAll();
       }
     }
