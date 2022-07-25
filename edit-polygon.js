@@ -8,60 +8,53 @@ const getSize = (obj, bgScaledWidth, bgScaledHeight) => ({
 canvas.on('mouse:dblclick', function (event) {
     if (bgScaledWidth && bgScaledHeight) {
       if (event.target) {
-        let coordinates = {}
-        let polySize = {}
-        let markerCoordinates = {}
-        let markerSize = {} 
-        let rectCoordinates = {}
-        let rectSize = {}
-        let points = {}
-        let size = {}
-        let polyCoordinates = {}
-        let rectAngle = 0 
+        let map = {}
+
         if (event.target.type === 'group') {
-          size = getSize(event.target,bgScaledWidth,bgScaledHeight)
-          coordinates = {
-            x: 100 * (event.target.left / bgScaledWidth),
-            y: 100 * (event.target.top / bgScaledHeight),
+          map = {
+            ...map,
+            size: getSize(event.target,bgScaledWidth,bgScaledHeight),
+            coordinates: {
+              x: 100 * (event.target.left / bgScaledWidth),
+              y: 100 * (event.target.top / bgScaledHeight),
+            }
           }
           event.target?.forEachObject(obj => {
               if (obj.type === 'rect') {
-                rectSize = getSize(obj,bgScaledWidth,bgScaledHeight)
-                rectAngle = obj.angle
-                rectCoordinates = {
-                  x: 100 * (obj.left / bgScaledWidth),
-                  y: 100 * (obj.top / bgScaledHeight),
+                map = {
+                  ...map,
+                  rectSize: getSize(obj,bgScaledWidth,bgScaledHeight),
+                  rectCoordinates: {
+                    x: 100 * (obj.left / bgScaledWidth),
+                    y: 100 * (obj.top / bgScaledHeight),
+                  },
+                  rectAngle: obj.angle
                 }
               }
               if (obj.type === 'polygon') {
-                polySize = getSize(obj,bgScaledWidth,bgScaledHeight)
-                points =  obj.points;
-                polyCoordinates = {
-                  x: 100 * (obj.left / bgScaledWidth),
-                  y: 100 * (obj.top / bgScaledHeight),
+                map = {
+                  ...map,
+                  polySize: getSize(obj,bgScaledWidth,bgScaledHeight),
+                  points:  obj.points,
+                  polyCoordinates: {
+                    x: 100 * (obj.left / bgScaledWidth),
+                    y: 100 * (obj.top / bgScaledHeight),
+                  }
                 }
               }
               if (obj.type === 'circle') {
-                 markerSize = getSize(obj,bgScaledWidth,bgScaledHeight) 
-                 markerCoordinates = {
+                map = {
+                  ...map,
+                 markerSize: getSize(obj,bgScaledWidth,bgScaledHeight), 
+                 markerCoordinates: {
                    x: 100 * (obj.left / bgScaledWidth),
                    y: 100 * (obj.top / bgScaledHeight),
                  }
+                }
               }
           })
-          console.log({ 
-            polySize,
-            polyCoordinates,
-            coordinates, 
-            points, 
-            markerCoordinates, 
-            size, 
-            markerSize,
-            rectSize,
-            rectCoordinates,
-            rectAngle, 
-            angle: event.target.angle 
-          })
+
+          console.log(map)
         } else {
           console.log(
             {

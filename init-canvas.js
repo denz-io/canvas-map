@@ -8,6 +8,13 @@ var bgScaledWidth = 0;
 var bgScaledHeight = 0;
 
 function AddImage() {
+
+    if (localStorage.getItem('ImageUrl')) {
+      if (!confirm('Use previous background URL?')) {
+        localStorage.removeItem('ImageUrl')
+      }
+    }
+
     let ImageUrl = localStorage.getItem('ImageUrl') || prompt("Add a Image URL", "https://archinect.imgix.net/uploads/gx/gxaluhao99e4xpmv.jpg?auto=compress%2Cformat")
 
     localStorage.setItem('ImageUrl', ImageUrl)
